@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        table, th, tr, td {
+            border: 1px solid black;
+            text-align: left;
+            margin: 2px, 2px, 2px, 2px;
+            height: 20px;
+            vertical-align: bottom;
+        }
+        th {
+            background-color: #d6f1ff;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1> New Contacts Report, May-June 2020</h1>
+    <h2>Summary</h2>
+        <p>Statistics from all potential contacted clients, May-June 2020.</p>
+        <p style="margin-bottom: 0;"><strong>Notes</strong></p>
+        <ul>
+            <li>Contacts gathered from <a href="http://goodfirms.co">goodfirms.co</a>, with filters set for
+                <i>United States, United Kingdom,</i> and <i>Australia</i>; therefore the percentage of countries
+                in the list is heavily skewed towards these three countries. </li>
+            <li>Here (link) is the template for emails used to contact each client.</li>
+        </ul>
+
+    {% for key, df in dfs.items() %}
+
+        {% if key == 'by_result_count' %}
+            <h2>Total Contacted by Result Type</h2>
+            <table>
+                <tr>
+                    {% for column in df.columns[:4] %}
+                        <th>{{ column|capitalize }}</th>
+                    {% endfor %}
+                </tr>
+                {% for idx, row in df.iterrows() %}
+                <tr>
+                    {% for colname in df.columns[:4] %}
+                        {% if row[colname]|float != 0 %}
+                            <td>{{ row[colname] | round(3) }}</td>
+                        {% else %}
+                            <td>{{ row[colname] }}</td>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                </tr>
+            </table>
+        <br>
+
+
+        {% elif key == 'by_response_rate' %}
+            <h2>Results by Response Rate</h2>
+            <table>
+                <tr>
+                    <th>Country</th>
+                    <th>Response count</th>
+                    <th>Contact count</th>
+                    <th>Response rate per contact</th>
+                    <th>Response rate per total</th>
+                </tr>
+                {% for idx, row in df.iterrows() %}
+                    <tr>
+                        {% set rowlist = row.to_string().split(" ") %}
+                        <td>{{ idx }}</td>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        <br>
+
+
+        {% elif key == 'by_countries' %}
+            <h2>Total Contacted by Country </h2>
+            <table>
+                <tr>
+                    {% for column in df.columns[:4] %}
+                        <th>{{ column|capitalize }}</th>
+                    {% endfor %}
+                </tr>
+                {% for idx, row in df.iterrows() %}
+                <tr>
+                    {% for colname in df.columns[:4] %}
+                        {% if row[colname]|float != 0 %}
+                            <td>{{ row[colname] | round(3) }}</td>
+                        {% else %}
+                            <td>{{ row[colname] }}</td>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                </tr>
+            </table>
+        <br>
+
+
+    <!--
+        {% elif key == 'by_result_per_country' %}
+            <h2>Result Type by Country</h2>
+            <table>
+                <tr>
+                    <th>Country</th>
+                    <th>Result</th>
+                    <th>Count</th>
+                </tr>
+                {% set stack = [] %}
+                {% for idx, row in df.iterrows() %}
+                    <tr>
+                        {% if idx[0] in stack %} <td>{{ "" }}</td>
+                            {% else %} <td>{{ idx[0] }}</td> {{ stack.append(idx[0]) }}
+                        {% endif %}
+                        <td>{{ idx[1] }}</td>
+                        {% set rowlist = row.to_string().split(" ") %}
+                        <td>{{ rowlist[6] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        <br>
+    -->
+
+
+        {# new tables go here #}
+
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
